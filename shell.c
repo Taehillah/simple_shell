@@ -1,7 +1,7 @@
 #include "main.h"
 
 /**
- * main - runs indefinetly
+ * main - runs indefinetly in a loop
  * @ac: void
  * @av: void
  * Return: loop.
