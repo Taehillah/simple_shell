@@ -61,15 +61,13 @@ int main(int argc, char **argv)
 		}
 		return (0);
 	}
-
 	buffer = (char *)malloc(bufsize * sizeof(char));
 	if (buffer == NULL)
 	{
 		perror("Unable to allocate buffer");
 		exit(1);
 	}
-
-	do {
+do {
 		if (isatty(fileno(stdin)))
 		{
 			isPipe = 1;
