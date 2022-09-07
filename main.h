@@ -1,117 +1,126 @@
-#ifndef MAIN_H
-#define MAIN_H
-#include <stdarg.h>
-#include <stdio.h>
+#ifndef _SHELL_H_
+#define _SHELL_H_
+
+#include <fcntl.h>
+#include <signal.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <sys/wait.h>
+#include <stdlib.h>
 #include <unistd.h>
+#include <errno.h>
+#include <stdio.h>
 
-#define UNUSED(x) (void)(x)
-#define BUFF_SIZE 1024
+#define END_OF_FILE -2
+#define EXIT -3
 
-/* FLAGS */
-#define F_MINUS 1
-#define F_PLUS 2
-#define F_ZERO 4
-#define F_HASH 8
-#define F_SPACE 16
-
-/* SIZES */
-#define S_LONG 2
-#define S_SHORT 1
+/* Global environemnt */
+extern char **environ;
+/* Global program name */
+char *name;
+/* Global history counter */
+int hist;
 
 /**
- * struct fmt - Struct op
- *
- * @fmt: The format.
- * @fn: The function associated.
+ * struct list_s - new struct type defining a linked list.
+ * @dir: directory path.
+ * @next: pointer to another struct list_s.
  */
-struct fmt
+typedef struct list_s
 {
-	char fmt;
-	int (*fn)(va_list, char[], int, int, int, int);
-};
-
+	char *dir;
+	struct list_s *next;
+} list_t;
 
 /**
- * typedef struct fmt fmt_t - Struct op
- *
- * @fmt: The format.
- * @fm_t: The function associated.
+ * struct builtin_s - new struct type defining builtin commands.
+ * @name: name of the builtin command.
+ * @f:function pointer to the builtin command's function.
  */
-typedef struct fmt fmt_t;
+typedef struct builtin_s
+{
+	char *name;
+	int (*f)(char **argv, char **front);
+} builtin_t;
 
-int _printf(const char *format, ...);
-int handle_print(const char *fmt, int *i,
-va_list list, char buffer[], int flags, int width, int precision, int size);
+/**
+ * struct alias_s -  new struct defining aliases.
+ * @name:  name of the alias.
+ * @value:  value of the alias.
+ * @next: pointer to another struct alias_s.
+ */
+typedef struct alias_s
+{
+	char *name;
+	char *value;
+	struct alias_s *next;
+} alias_t;
 
-/****************** FUNCTIONS ******************/
-
-/* Funtions to print chars and strings */
-int print_char(va_list types, char buffer[],
-	int flags, int width, int precision, int size);
-int print_string(va_list types, char buffer[],
-	int flags, int width, int precision, int size);
-int print_percent(va_list types, char buffer[],
-	int flags, int width, int precision, int size);
-
-/* Functions to print numbers */
-int print_int(va_list types, char buffer[],
-	int flags, int width, int precision, int size);
-int print_binary(va_list types, char buffer[],
-	int flags, int width, int precision, int size);
-int print_unsigned(va_list types, char buffer[],
-	int flags, int width, int precision, int size);
-int print_octal(va_list types, char buffer[],
-	int flags, int width, int precision, int size);
-int print_hexadecimal(va_list types, char buffer[],
-	int flags, int width, int precision, int size);
-int print_hexa_upper(va_list types, char buffer[],
-	int flags, int width, int precision, int size);
-
-int print_hexa(va_list types, char map_to[],
-char buffer[], int flags, char flag_ch, int width, int precision, int size);
-
-/* Function to print non printable characters */
-int print_non_printable(va_list types, char buffer[],
-	int flags, int width, int precision, int size);
-
-/* Funcion to print memory address */
-int print_pointer(va_list types, char buffer[],
-	int flags, int width, int precision, int size);
-
-/* Funciotns to handle other specifiers */
-int get_flags(const char *format, int *i);
-int get_width(const char *format, int *i, va_list list);
-int get_precision(const char *format, int *i, va_list list);
-int get_size(const char *format, int *i);
-
-/*Function to print string in reverse*/
-int print_reverse(va_list types, char buffer[],
-	int flags, int width, int precision, int size);
-
-/*Function to print a string in rot 13*/
-int print_rot13string(va_list types, char buffer[],
-	int flags, int width, int precision, int size);
-
-/* width handler */
-int handle_write_char(char c, char buffer[],
-	int flags, int width, int precision, int size);
-int write_number(int is_positive, int ind, char buffer[],
-	int flags, int width, int precision, int size);
-int write_num(int ind, char bff[], int flags, int width, int precision,
-	int length, char padd, char extra_c);
-int write_pointer(char buffer[], int ind, int length,
-	int width, int flags, char padd, char extra_c, int padd_start);
-
-int write_unsgnd(int is_negative, int ind,
-char buffer[],
-	int flags, int width, int precision, int size);
-
-/****************** UTILS ******************/
-int is_printable(char);
-int append_hexa_code(char, char[], int);
-int is_digit(char);
-
-long int convert_size_number(long int num, int size);
-long int convert_size_unsgnd(unsigned long int num, int size);
-
-#endif /* MAIN_H */
+/* Global aliases linked list */
+alias_t *aliases;
+/* Main Helpers */
+ssize_t _getline(char **lineptr, size_t *n, FILE *stream);
+void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size);
+char **_strtok(char *line, char *delim);
+char *get_location(char *command);
+list_t *get_path_dir(char *path);
+int execute(char **args, char **front);
+void free_list(list_t *head);
+char *_itoa(int num);
+/* Input Helpers */
+void handle_line(char **line, ssize_t read);
+void variable_replacement(char **args, int *exe_ret);
+char *get_args(char *line, int *exe_ret);
+int call_args(char **args, char **front, int *exe_ret);
+int run_args(char **args, char **front, int *exe_ret);
+int handle_args(int *exe_ret);
+int check_args(char **args);
+void free_args(char **args, char **front);
+char **replace_aliases(char **args);
+/* String functions */
+int _strlen(const char *s);
+char *_strcat(char *dest, const char *src);
+char *_strncat(char *dest, const char *src, size_t n);
+char *_strcpy(char *dest, const char *src);
+char *_strchr(char *s, char c);
+int _strspn(char *s, char *accept);
+int _strcmp(char *s1, char *s2);
+int _strncmp(const char *s1, const char *s2, size_t n);
+/* Builtins */
+int (*get_builtin(char *command))(char **args, char **front);
+int shellby_exit(char **args, char **front);
+int shellby_env(char **args, char __attribute__((__unused__)) **front);
+int shellby_setenv(char **args, char __attribute__((__unused__)) **front);
+int shellby_unsetenv(char **args, char __attribute__((__unused__)) **front);
+int shellby_cd(char **args, char __attribute__((__unused__)) **front);
+int shellby_alias(char **args, char __attribute__((__unused__)) **front);
+int shellby_help(char **args, char __attribute__((__unused__)) **front);
+/* Builtin Helpers */
+char **_copyenv(void);
+void free_env(void);
+char **_getenv(const char *var);
+/* Error Handling */
+int create_error(char **args, int err);
+char *error_env(char **args);
+char *error_1(char **args);
+char *error_2_exit(char **args);
+char *error_2_cd(char **args);
+char *error_2_syntax(char **args);
+char *error_126(char **args);
+char *error_127(char **args);
+/* Linkedlist Helpers */
+alias_t *add_alias_end(alias_t **head, char *name, char *value);
+void free_alias_list(alias_t *head);
+list_t *add_node_end(list_t **head, char *dir);
+void free_list(list_t *head);
+void help_all(void);
+void help_alias(void);
+void help_cd(void);
+void help_exit(void);
+void help_help(void);
+void help_env(void);
+void help_setenv(void);
+void help_unsetenv(void);
+void help_history(void);
+int proc_file_commands(char *file_path, int *exe_ret);
+#endif /* _SHELL_H_ */
