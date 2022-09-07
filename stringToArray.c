@@ -2,7 +2,8 @@
 /**
   *tokenaization - split a sentence into multiple words.
   *@str: the string passed as argument.
-  *Return: pointer holding words.
+ *
+ *Return: pointer holding words.
   */
 char **tokenaization(char *str)
 {

@@ -14,5 +14,4 @@ int _putchar(char c);
 void _puts(char *str);
 unsigned int nbr_spaces(char *s);
 char **stringToTokens(char *str);
-
 #endif

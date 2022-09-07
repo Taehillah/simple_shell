@@ -5,7 +5,6 @@
 
 /**
  * main - stat example
- *
  * Return: Always 0.
  */
 int main(int ac, char **av)

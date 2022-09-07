@@ -2,7 +2,6 @@
 #include <unistd.h>
 /**
  * main - execve example
- *
  * Return: Always 0.
  */
 int main(void)

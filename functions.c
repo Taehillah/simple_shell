@@ -1,6 +1,7 @@
 /**
  * _strlen - find the length of a string
  * @s: pointer to the string to check
+ *
  * Return: void
 */
 

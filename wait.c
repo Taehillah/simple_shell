@@ -5,7 +5,6 @@
 
 /**
  * main - fork & wait example
- *
  * Return: Always 0.
  */
 int main(void)

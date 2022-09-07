@@ -2,8 +2,7 @@
 #include <unistd.h>
 #include <sys/wait.h>
 /**
- * main - forking function
- *
+ * main - forking function.
  * Return: Always 0.
  */
 int main(void)
@@ -28,6 +27,6 @@ int main(void)
     {
         wait(&status);
         printf("(%u) %u, I am your father\n", my_pid, child_pid);
-    }
-    return (0);
+}
+return (0);
 }

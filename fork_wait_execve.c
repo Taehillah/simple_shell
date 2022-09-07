@@ -6,7 +6,7 @@
 /**
  * execute - executes the command
  * @forked: number of child processes
- * Return: Always 0, -1 on error.
+ * Return: Always 0, -1 on error
  */
 int execute(int *forked)
 {

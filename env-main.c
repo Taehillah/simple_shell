@@ -3,7 +3,7 @@
 /**
  * main - prints the environment ucing the env parameter from the main function
  *
- * Return: Always 0.
+ * Return: Always 0
  */
 int main(int ac, char **av, char **env)
 {

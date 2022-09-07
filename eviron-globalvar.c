@@ -4,7 +4,7 @@
 extern char **environ;
 
 /**
- * main - prints the environment using the global variable environ
+ * main - prints environment using the global variable environ
  *
  * Return: Always 0.
  */

@@ -2,6 +2,7 @@
 /**
  * _puts - prints a string
  * @str: pointer to the string to print
+ *
  * Return: void
 */
 

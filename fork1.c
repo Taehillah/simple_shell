@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <unistd.h>
 /**
- * main - fork
+ * main - forks
  *
  * Return: Always 0.
  */
